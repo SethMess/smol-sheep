@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjogjdr8aeddc"]
+
+[ext_resource type="PackedScene" uid="uid://ytpcdctbl45a" path="res://sheep.tscn" id="1_32l4e"]
+
+[node name="World" type="Node2D"]
+
+[node name="sheep" parent="." instance=ExtResource("1_32l4e")]

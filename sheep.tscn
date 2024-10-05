@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://ytpcdctbl45a"]
+
+[node name="sheep" type="CharacterBody2D"]
