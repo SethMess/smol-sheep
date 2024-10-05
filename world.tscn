@@ -5,3 +5,4 @@
 [node name="World" type="Node2D"]
 
 [node name="sheep" parent="." instance=ExtResource("1_32l4e")]
+position = Vector2(83, 66)
