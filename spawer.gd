@@ -12,8 +12,8 @@ func spawn_sheep():
 		var sheep_instance = sheep_scene.instantiate()
 		
 		# Set a random position within the spawn area
-		var random_x = randf_range(-spawn_area_size.x / 2, spawn_area_size.x / 2)
-		var random_y = randf_range(-spawn_area_size.y / 2, spawn_area_size.y / 2)
+		var random_x = randf_range(0, spawn_area_size.x)
+		var random_y = randf_range(0, spawn_area_size.y)
 		sheep_instance.position = Vector2(random_x, random_y)
 		
 		# Add the sheep instance to the scene

@@ -4,10 +4,10 @@
 [ext_resource type="Script" path="res://sheep.gd" id="1_mrdsj"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hrkho"]
-radius = 24.0832
+radius = 32.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_mrxwf"]
-radius = 603.119
+radius = 185.132
 
 [node name="sheep" type="CharacterBody2D" groups=["sheep"]]
 script = ExtResource("1_mrdsj")

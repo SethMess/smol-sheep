@@ -11,4 +11,4 @@ position = Vector2(397, 245)
 [node name="spawner" parent="." instance=ExtResource("3_0q4am")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(577, 326)
+position = Vector2(577, 323)
