@@ -1,9 +1,9 @@
 extends CharacterBody2D
 
 
-const SPEED = 100.0
+const SPEED = 200.0
 
-const separation_weight = 1
+const separation_weight = 10
 const cohesion_weight = 1
 const alignment_weight = 1
 
@@ -18,7 +18,7 @@ var max_acceleration = 1000
 var rotationOffset = PI/2
 
 
-const BOUNDARY_FORCE_SCALE = 0.1  # Adjust to tune how strongly they turn back to center
+const BOUNDARY_FORCE_SCALE = 100  # Adjust to tune how strongly they turn back to center
 const TIME_OUTSIDE_SCALE = 1.5  # Adjust to control how quickly the force ramps up over time
 
 var heading = Vector2.ZERO
@@ -45,16 +45,16 @@ func _physics_process(delta):
 	var alignment_force = calculate_alignment()
 	var cohesion_force = calculate_cohesion()
 	
-	var total_force = separation_force + alignment_force + cohesion_force
-	
+	var total_force: Vector2 = separation_force + alignment_force + cohesion_force
+	total_force = total_force.limit_length(SPEED)
 	total_force += calculate_boundary_force(delta)
 	#velocity = velocity.normalized() * SPEED
 	# Update velocity based on total force
 	velocity += total_force * delta
 	velocity = velocity.limit_length(SPEED)
 	
-	#if velocity.length() > 0:
-		#rotation = velocity.angle()
+	if velocity.length() > 0:
+		rotation = velocity.angle() + PI
 
 	# Print for debugging
 	print("Velocity:", velocity, " Total force:", total_force)
@@ -66,14 +66,16 @@ func _physics_process(delta):
 
 
 func calculate_boundary_force(delta) -> Vector2:
-	var screen_size = get_viewport_rect().size
-	var screen_center = screen_size / 2
-	var force = Vector2.ZERO
 	var screen = get_viewport_rect()
-	if position.x < 0 or position.x > screen_size.x or position.y < 0 or position.y > screen_size.y:
+	
+	# Shrink screen to 80% size (by reducing each side by 10%)
+	var inner_screen = screen.grow(-0.3 * screen.size.x)  # Shrinks by 10% on each side
+	var screen_center = screen.get_center()
+	var force = Vector2.ZERO
+	if inner_screen.has_point(position) == false:
 		# Sheep is outside screen bounds
-		time_outside_screen += delta
-		var direction_to_center = (screen_center - position).normalized()
+		time_outside_screen += delta + 1
+		var direction_to_center = (screen_center - position)
 		
 		# Increase force proportionally to time outside and scale it
 		force = direction_to_center * BOUNDARY_FORCE_SCALE * pow(time_outside_screen, TIME_OUTSIDE_SCALE)
@@ -91,7 +93,7 @@ func calculate_cohesion():
 		force += sheep.position
 	force /= nearby_sheep.size()
 	#var cohesion_force = (force - position).normalized()
-	var cohesion_force = (force - position)
+	var cohesion_force = (force - position) / 100
 	return cohesion_force * cohesion_weight  # Tune with a cohesion weight
 
 func calculate_separation():
@@ -100,10 +102,11 @@ func calculate_separation():
 		return force
 
 	for sheep in nearby_sheep:
-		var offset = position - sheep.position
+		@warning_ignore("unused_variable")
+		var offset = sheep.position - position
 		#force += offset.normalized() / offset.length_squared()
-		if offset.length_squared() > 0:  # Prevent division by zero
-			force += offset / offset.length_squared()
+		#if offset.length_squared() > 0:  # Prevent division by zero
+			#force += offset / offset.length_squared()
 	return force * separation_weight  # Adjust weight for tuning
 
 
@@ -114,7 +117,7 @@ func calculate_alignment():
 	for sheep in nearby_sheep:
 		average_velocity += sheep.velocity #check velocity
 	#var force = average_velocity.normalized()
-	var force = average_velocity
+	var force = average_velocity / nearby_sheep.size()
 	return force * alignment_weight
 
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cjogjdr8aeddc"]
 
 [ext_resource type="PackedScene" uid="uid://ytpcdctbl45a" path="res://sheep.tscn" id="1_32l4e"]
-[ext_resource type="PackedScene" uid="uid://ylfm34kid07b" path="res://spawner.tscn" id="3_0q4am"]
+[ext_resource type="PackedScene" path="res://spawner.tscn" id="3_0q4am"]
 
 [node name="World" type="Node2D"]
 
