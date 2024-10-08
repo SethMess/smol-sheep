@@ -1,9 +1,9 @@
 extends CharacterBody2D
 
 
-const SPEED = 200.0
+const SPEED = 100.0
 
-const separation_weight = 10
+const separation_weight = 100
 const cohesion_weight = 1
 const alignment_weight = 1
 
@@ -18,7 +18,7 @@ var max_acceleration = 1000
 var rotationOffset = PI/2
 
 
-const BOUNDARY_FORCE_SCALE = 100  # Adjust to tune how strongly they turn back to center
+const BOUNDARY_FORCE_SCALE = 10  # Adjust to tune how strongly they turn back to center
 const TIME_OUTSIDE_SCALE = 1.5  # Adjust to control how quickly the force ramps up over time
 
 var heading = Vector2.ZERO
@@ -53,8 +53,13 @@ func _physics_process(delta):
 	velocity += total_force * delta
 	velocity = velocity.limit_length(SPEED)
 	
-	if velocity.length() > 0:
-		rotation = velocity.angle() + PI
+	#if velocity.length() > 0:
+		#rotation = velocity.angle() + PI
+	
+	if velocity.x < 0:
+		$Sprite2D.flip_h = false
+	else:
+		$Sprite2D.flip_h = true
 
 	# Print for debugging
 	print("Velocity:", velocity, " Total force:", total_force)
@@ -69,12 +74,12 @@ func calculate_boundary_force(delta) -> Vector2:
 	var screen = get_viewport_rect()
 	
 	# Shrink screen to 80% size (by reducing each side by 10%)
-	var inner_screen = screen.grow(-0.3 * screen.size.x)  # Shrinks by 10% on each side
+	var inner_screen = screen.grow(-0.1 * min(screen.size.x, screen.size.y))  # Shrinks by 10% on each side
 	var screen_center = screen.get_center()
 	var force = Vector2.ZERO
-	if inner_screen.has_point(position) == false:
+	if inner_screen.abs().has_point(position) == false:
 		# Sheep is outside screen bounds
-		time_outside_screen += delta + 1
+		time_outside_screen += delta
 		var direction_to_center = (screen_center - position)
 		
 		# Increase force proportionally to time outside and scale it
